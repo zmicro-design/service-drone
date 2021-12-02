@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  drone-server:
+    image: drone/drone:${SERVICE_DRONE_VERSION}
+    volumes:
+      - ${SERVICE_DATA}/data/drone:/data
+    environment:
+      DRONE_AGENTS_ENABLED: 'true'
+      DRONE_GOGS_SERVER: https://${SERVICE_DRONE_GOGS_HTTP_HOST}
+      DRONE_SERVER_PROTO: https
+      DRONE_SERVER_HOST: ${SERVICE_DRONE_DOMAIN}
+      DRONE_RPC_SECRET: ${SERVICE_DRONE_RPC_SECRET}
+      DRONE_USER_CREATE: username:${SERVICE_DRONE_ADMIN_USER},admin:true
+
+  drone-agent:
+    image: drone/agent:${SERVICE_DRONE_AGENT_VERSION}
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DRONE_RPC_PROTO: http
+      DRONE_RPC_HOST: drone-server:80
+      DRONE_RPC_SECRET: ${SERVICE_DRONE_RPC_SECRET}
+      DRONE_RUNNER_CAPACITY: 2
+      DRONE_RUNNER_NAME: drone
+
+networks:
+  default:
+    external: true
+    name: compose-ingress
