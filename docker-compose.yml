@@ -4,7 +4,7 @@ services:
   drone-server:
     image: drone/drone:${SERVICE_DRONE_VERSION}
     volumes:
-      - ${SERVICE_DATA}/data/drone:/data
+      - ${SERVICE_DATA}:/data
     environment:
       DRONE_AGENTS_ENABLED: 'true'
       DRONE_GOGS_SERVER: https://${SERVICE_DRONE_GOGS_HTTP_HOST}
