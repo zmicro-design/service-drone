@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   drone-server:
+    restart: always
     image: drone/drone:${SERVICE_DRONE_VERSION}
     volumes:
       - ${SERVICE_DATA}:/data
@@ -14,6 +15,7 @@ services:
       DRONE_USER_CREATE: username:${SERVICE_DRONE_ADMIN_USER},admin:true
 
   drone-agent:
+    restart: always
     image: drone/agent:${SERVICE_DRONE_AGENT_VERSION}
     depends_on:
       - drone-server
